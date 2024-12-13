@@ -45,6 +45,8 @@ export class TransactionService implements OnModuleInit {
       const response = await axios.get(this.MOCK_API_URL);
       const newTransactions = response.data;
 
+      console.log(newTransactions);
+
       // Compare the fetched data with the current cache
       if (JSON.stringify(this.transactions) !== JSON.stringify(newTransactions)) {
         this.transactions = newTransactions;

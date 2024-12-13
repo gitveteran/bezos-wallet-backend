@@ -9,6 +9,7 @@ import { MerchantResolver } from './merchant/merchant.resolver';
 import { MerchantService } from './merchant/merchant.service';
 import { TransactionService } from './transaction/transaction.service';
 import { DataSource } from 'typeorm';
+import { TransactionResolver } from './transaction/transaction.resolver';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { DataSource } from 'typeorm';
     })
   ],
   controllers: [AppController],
-  providers: [AppService, MerchantResolver, MerchantService, TransactionService],
+  providers: [AppService, MerchantResolver, MerchantService, TransactionService, TransactionResolver],
 })
 export class AppModule implements OnApplicationBootstrap {
   constructor(private dataSource: DataSource) {}
