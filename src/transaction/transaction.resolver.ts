@@ -2,6 +2,7 @@ import { Resolver, Query, Subscription } from '@nestjs/graphql';
 import { TransactionService } from './transaction.service';
 import { PubSub } from 'graphql-subscriptions';
 import { TransactionDTO } from '../dto/transaction.dto';
+import { TRANSACTIONS_UPDATED_EVENT } from './events';
 
 /**
 * TransactionResolver handles GraphQL queries and subscriptions for transaction data.
@@ -33,14 +34,14 @@ export class TransactionResolver {
   * Subscribes to real-time updates for transaction data.
   * When transactions are updated, the changes are pushed to the clients.
   * 
-  * @returns An async iterator for the 'TRANSACTIONS_UPDATED' event.
+  * @returns An async iterator for the TRANSACTIONS_UPDATED_EVENT.
   */
   @Subscription(() => [TransactionDTO], {
     description: 'Listen for transaction updates',
     resolve: (payload) => payload.transactionsUpdated, // Extract the updated transactions
   })
   transactionsUpdated() {
-    // Subscribe to the TRANSACTIONS_UPDATED event and return the async iterator
-    return this.pubSub.asyncIterableIterator('TRANSACTIONS_UPDATED');
+    // Subscribe to the TRANSACTIONS_UPDATED_EVENT and return the async iterator
+    return this.pubSub.asyncIterableIterator(TRANSACTIONS_UPDATED_EVENT);
   }
 }

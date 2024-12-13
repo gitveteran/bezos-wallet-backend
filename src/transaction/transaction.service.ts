@@ -1,6 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import axios from 'axios';
+import { MOCK_API_URL, POLLING_INTERVAL_MS } from '../constants';
+import { TRANSACTIONS_UPDATED_EVENT } from './events';
 
 /**
 * TransactionService handles fetching transactions from an external API,
@@ -10,9 +12,6 @@ import axios from 'axios';
 export class TransactionService implements OnModuleInit {
   private transactions = [];
   private readonly pubSub = new PubSub();
-
-  // Mock API endpoint for fetching transactions
-  private readonly MOCK_API_URL = 'https://61b3dea5af5ff70017ca20bf.mockapi.io/transactions';
 
   /**
   * Lifecycle hook: Called when the module is initialized.
@@ -32,7 +31,7 @@ export class TransactionService implements OnModuleInit {
 
     setInterval(async () => {
       this.fetchAndPublishTransactions();
-    }, 10000); // Poll every 10 seconds
+    }, POLLING_INTERVAL_MS); // Poll every 10 seconds
   }
 
   /**
@@ -42,7 +41,7 @@ export class TransactionService implements OnModuleInit {
   private async fetchAndPublishTransactions() {
     try {
       // Fetch transactions from the external API
-      const response = await axios.get(this.MOCK_API_URL);
+      const response = await axios.get(MOCK_API_URL);
       const newTransactions = response.data;
 
       console.log(newTransactions);
@@ -52,7 +51,7 @@ export class TransactionService implements OnModuleInit {
         this.transactions = newTransactions;
 
         // Publish updated transactions to subscribers
-        await this.pubSub.publish('TRANSACTIONS_UPDATED', {
+        await this.pubSub.publish(TRANSACTIONS_UPDATED_EVENT, {
           transactionsUpdated: this.transactions,
         });
       }
