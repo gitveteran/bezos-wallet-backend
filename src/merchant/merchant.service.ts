@@ -49,7 +49,7 @@ export class MerchantService {
   */
   async getBezosRelatedMerchants(): Promise<Merchant[]> {
     try {
-      return await this.merchantRepository.find({ where: { isBezosRelated: true } });
+      return await this.merchantRepository.find({});
     } catch (error) {
       throw new Error(`Error while fetching Bezos-related merchants: ${error.message}`);
     }
