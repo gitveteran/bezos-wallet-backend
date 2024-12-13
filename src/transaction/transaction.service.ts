@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import axios from 'axios';
-import { MOCK_API_URL, POLLING_INTERVAL_MS } from '../constants';
+import { MOCK_API_URL, POLLING_INTERVAL_MS } from '../config';
 import { TRANSACTIONS_UPDATED_EVENT } from './events';
 
 /**
@@ -33,20 +33,36 @@ export class TransactionService implements OnModuleInit {
       this.fetchAndPublishTransactions();
     }, POLLING_INTERVAL_MS); // Poll every 10 seconds
   }
+  
+  /**
+  * Filters transactions to only include those in January 2029.
+  * @param transactions - Array of transactions with a date field.
+  * @returns Filtered transactions occurring in January 2029.
+  */
+  filterTxByDate (TXs) {
+    return TXs.filter((tx) => {
+      const date = new Date(tx.date);
+      return date.getUTCFullYear() === 2029 && date.getUTCMonth() === 0;
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  };
 
   /**
   * Fetches transactions from the Mock API and checks for updates.
   * If changes are detected, publishes the updated data to subscribers.
   */
+
   private async fetchAndPublishTransactions() {
     try {
       // Fetch transactions from the external API
       const response = await axios.get(MOCK_API_URL);
       const newTransactions = response.data;
 
+      const filteredTxs = this.filterTxByDate(newTransactions);
+
       // Compare the fetched data with the current cache
       if (JSON.stringify(this.transactions) !== JSON.stringify(newTransactions)) {
-        this.transactions = newTransactions;
+        this.transactions = filteredTxs;
 
         // Publish updated transactions to subscribers
         await this.pubSub.publish(TRANSACTIONS_UPDATED_EVENT, {
