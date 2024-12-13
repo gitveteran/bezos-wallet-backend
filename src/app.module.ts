@@ -26,7 +26,7 @@ import { TransactionResolver } from './transaction/transaction.resolver';
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       subscriptions: {
-        'graphql-ws': true, //Enable WebSocket for subscriptions
+        'subscriptions-transport-ws': true, //Enable WebSocket for subscriptions
       },
     })
   ],
