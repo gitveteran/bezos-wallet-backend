@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Merchant {
+  id: ID!
+  merchant: String!
+  isBezosRelated: Boolean!
+}
+
+type Query {
+  bezosMerchants: [Merchant!]!
+}
+
+type Mutation {
+  markMerchant(merchant: String!, isBezosRelated: Boolean!): Merchant!
+}
