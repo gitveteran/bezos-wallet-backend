@@ -7,7 +7,9 @@ import { AppService } from './app.service';
 import { Merchant } from './entities/merchant.entity';
 import { MerchantResolver } from './merchant/merchant.resolver';
 import { MerchantService } from './merchant/merchant.service';
+import { TransactionService } from './transaction/transaction.service';
 import { DataSource } from 'typeorm';
+import { TransactionResolver } from './transaction/transaction.resolver';
 
 @Module({
   imports: [
@@ -23,10 +25,13 @@ import { DataSource } from 'typeorm';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
+      subscriptions: {
+        'graphql-ws': true, //Enable WebSocket for subscriptions
+      },
     })
   ],
   controllers: [AppController],
-  providers: [AppService, MerchantResolver, MerchantService],
+  providers: [AppService, MerchantResolver, MerchantService, TransactionService, TransactionResolver],
 })
 export class AppModule implements OnApplicationBootstrap {
   constructor(private dataSource: DataSource) {}

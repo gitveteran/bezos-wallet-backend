@@ -8,10 +8,26 @@ type Merchant {
   isBezosRelated: Boolean!
 }
 
+type TransactionDTO {
+  id: Int!
+  amount: Float
+  category: [String!]
+  date: String
+  merchant_name: String
+}
+
 type Query {
   bezosMerchants: [Merchant!]!
+
+  """Fetch all transactions"""
+  transactions: [TransactionDTO!]!
 }
 
 type Mutation {
   markMerchant(merchant: String!, isBezosRelated: Boolean!): Merchant!
+}
+
+type Subscription {
+  """Listen for transaction updates"""
+  transactionsUpdated: [TransactionDTO!]!
 }
